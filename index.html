@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estudo de Mercado · Fattor Crédito · Crxate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#080a0e;
+    --panel:#0f131a;
+    --panel-2:#141922;
+    --text:#f4f5f7;
+    --soft:#cdd2db;
+    --muted:#959eac;
+    --faint:#646d7c;
+    --line:#1e2530;
+    --line-soft:#161b23;
+    --emerald:#34d399;
+    --emerald-deep:#1f8f66;
+    --amber:#e7b24d;
+    --rose:#e8718a;
+    --cyan:#6fc9ec;
+    --serif:"Outfit",ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --sans:"Outfit",ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --r:9px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    font-weight:400;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    letter-spacing:-0.006em;
+  }
+
+  /* ---- scroll deck ---- */
+  .deck{
+    height:100vh;
+    overflow-y:scroll;
+    scroll-snap-type:y mandatory;
+    scroll-behavior:smooth;
+  }
+  .deck::-webkit-scrollbar{width:0}
+  .slide{
+    min-height:100vh;
+    scroll-snap-align:start;
+    scroll-snap-stop:always;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:clamp(30px,8vh,96px) clamp(24px,7.5vw,132px);
+    overflow:hidden;
+  }
+  .inner{width:100%;max-width:1160px;margin:0 auto;position:relative;z-index:2}
+
+  /* decorative rings / glow */
+  .glow{position:absolute;border-radius:50%;filter:blur(30px);opacity:.32;z-index:0;pointer-events:none}
+  .ring{position:absolute;border:1px solid rgba(255,255,255,.045);border-radius:50%;z-index:0;pointer-events:none}
+
+  /* ---- typography ---- */
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:12px;
+    color:var(--emerald);font-weight:500;font-size:12px;
+    text-transform:uppercase;letter-spacing:.26em;margin-bottom:30px;
+  }
+  .eyebrow::before{content:"";width:30px;height:1px;background:var(--emerald);opacity:.7;display:inline-block}
+  .kicker{color:var(--faint);font-size:11.5px;font-weight:500;letter-spacing:.28em;text-transform:uppercase}
+  h1{font-family:var(--sans);font-size:clamp(46px,8vw,104px);line-height:1.0;font-weight:500;letter-spacing:-0.03em}
+  h1 em{font-style:normal;font-weight:500}
+  h2{font-family:var(--sans);font-size:clamp(30px,4.4vw,54px);line-height:1.08;font-weight:500;letter-spacing:-0.025em}
+  h2 em{font-style:normal;font-weight:500;color:inherit}
+  .lead{color:var(--soft);font-size:clamp(16.5px,1.7vw,21px);line-height:1.62;font-weight:400;max-width:740px;letter-spacing:-0.003em}
+  .lead b{font-weight:500}
+  .muted{color:var(--muted)}
+  .num-tag{font-variant-numeric:tabular-nums}
+
+  /* reveal */
+  .r{opacity:0;transform:translateY(22px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1)}
+  .slide.in .r{opacity:1;transform:none}
+  .slide.in .r.d1{transition-delay:.09s}
+  .slide.in .r.d2{transition-delay:.18s}
+  .slide.in .r.d3{transition-delay:.27s}
+  .slide.in .r.d4{transition-delay:.36s}
+  .slide.in .r.d5{transition-delay:.45s}
+  .slide.in .r.d6{transition-delay:.54s}
+
+  /* ---- logo ---- */
+  .logo{height:24px;width:auto;color:var(--text);opacity:.92}
+  .topbar{
+    position:fixed;top:0;left:0;right:0;z-index:30;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:26px clamp(24px,7.5vw,132px);
+    pointer-events:none;
+    mix-blend-mode:difference;
+  }
+  .topbar .right{font-size:11px;color:var(--text);letter-spacing:.24em;text-transform:uppercase;font-weight:500}
+
+  /* ---- nav dots ---- */
+  .dots{position:fixed;right:30px;top:50%;transform:translateY(-50%);z-index:30;display:flex;flex-direction:column;gap:16px}
+  .dots a{width:6px;height:6px;border-radius:50%;border:1px solid var(--faint);background:transparent;transition:all .4s cubic-bezier(.16,1,.3,1);display:block;opacity:.7}
+  .dots a.active{background:var(--emerald);border-color:var(--emerald);opacity:1;box-shadow:0 0 0 4px rgba(52,211,153,.12)}
+  @media(max-width:760px){.dots{display:none}}
+
+  /* ---- hero ---- */
+  .hero-meta{display:flex;flex-wrap:wrap;gap:0;margin-top:54px;border-top:1px solid var(--line);max-width:900px}
+  .hero-meta div{padding:20px 34px 0 0;margin-top:20px;min-width:160px}
+  .hero-meta b{display:block;font-size:15px;font-weight:500;margin-bottom:6px;letter-spacing:-0.01em}
+  .hero-meta span{color:var(--faint);font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+  .scroll-hint{position:absolute;bottom:38px;left:50%;transform:translateX(-50%);color:var(--faint);font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:10px;z-index:3}
+  .scroll-hint .bar{width:1px;height:40px;background:linear-gradient(var(--emerald),transparent);animation:drop 2s infinite}
+  @keyframes drop{0%{transform:scaleY(.2);transform-origin:top;opacity:0}40%{opacity:.9}100%{transform:scaleY(1);transform-origin:top;opacity:0}}
+
+  /* ---- company dossier ---- */
+  .facts{display:grid;grid-template-columns:repeat(3,1fr);gap:26px 44px;margin-top:44px;max-width:780px}
+  .fact{padding-top:20px;border-top:1px solid var(--line)}
+  .fact b{display:block;font-family:var(--sans);font-size:clamp(22px,2.3vw,30px);font-weight:500;letter-spacing:-0.02em;margin-bottom:10px}
+  .fact span{color:var(--faint);font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+  .partners{display:flex;flex-wrap:wrap;gap:14px 48px;margin-top:36px}
+  .partner{display:flex;align-items:center;gap:14px}
+  .partner .av{width:38px;height:38px;border-radius:50%;background:transparent;border:1px solid var(--emerald-deep);display:grid;place-items:center;color:var(--emerald);font-family:var(--serif);font-weight:400;font-size:15px;letter-spacing:.02em}
+  .partner b{font-size:15px;font-weight:500;letter-spacing:-0.01em}
+  .partner span{display:block;color:var(--faint);font-size:12px;margin-top:3px;letter-spacing:0}
+
+  /* ---- generic two-col ---- */
+  .two{display:grid;grid-template-columns:0.82fr 1.18fr;gap:clamp(30px,5vw,80px);align-items:center}
+  @media(max-width:900px){.two{grid-template-columns:1fr;gap:30px}}
+
+  /* ---- fragilidades ---- */
+  .frag-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px 44px;margin-top:44px}
+  .frag{padding-top:22px;border-top:1px solid var(--line);position:relative;display:flex;flex-direction:column}
+  .frag .n{font-family:var(--serif);font-size:30px;font-weight:300;color:var(--rose);opacity:.9;letter-spacing:0;margin-bottom:18px;font-variant-numeric:tabular-nums}
+  .frag p{color:var(--muted);font-size:14.5px;line-height:1.58}
+  .frag p b{color:var(--soft);font-weight:500}
+  @media(max-width:900px){.frag-grid{grid-template-columns:1fr}.frag{min-height:0}}
+
+  /* ---- canais ---- */
+  .channels{display:grid;grid-template-columns:1fr 1fr;gap:30px 56px;margin-top:46px}
+  .channel{padding-top:26px;border-top:1px solid var(--line)}
+  .channel .head{display:flex;align-items:baseline;gap:16px;margin-bottom:20px}
+  .channel .tag{font-size:10.5px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;padding:0;background:none!important}
+  .channel.vendas .tag{color:var(--emerald)}
+  .channel.mkt .tag{color:var(--cyan)}
+  .channel h3{font-family:var(--sans);font-size:22px;font-weight:500;letter-spacing:-0.02em}
+  .channel p{color:var(--muted);font-size:15px;line-height:1.66}
+  .channel p b{color:var(--soft);font-weight:500}
+  @media(max-width:900px){.channels{grid-template-columns:1fr}}
+
+  /* ---- oportunidades ---- */
+  .ops{display:grid;grid-template-columns:repeat(3,1fr);gap:32px 36px;margin-top:38px}
+  .op{padding-top:22px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:12px;position:relative;transition:border-color .4s}
+  .op.flag{border-top-color:var(--emerald)}
+  .op.flag::before{content:"Prioridade";position:absolute;top:22px;right:0;font-size:9.5px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--emerald)}
+  .op .chan{font-size:10.5px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+  .op h4{font-family:var(--sans);font-size:18px;font-weight:500;line-height:1.22;letter-spacing:-0.02em}
+  .op p{color:var(--muted);font-size:13.5px;line-height:1.56;flex:1}
+  .badges{display:flex;gap:18px;flex-wrap:wrap;margin-top:4px;padding-top:14px;border-top:1px solid var(--line-soft)}
+  .badge{font-size:12px;font-weight:500;letter-spacing:0;display:inline-flex;gap:7px;align-items:center;background:none}
+  .badge .k{color:var(--faint);font-weight:400;font-size:10px;letter-spacing:.14em;text-transform:uppercase}
+  .badge::before{content:"";width:6px;height:6px;border-radius:50%}
+  .b-alto{color:var(--emerald)}
+  .b-alto::before{background:var(--emerald)}
+  .b-medio{color:var(--amber)}
+  .b-medio::before{background:var(--amber)}
+  .b-baixo{color:var(--muted)}
+  .b-baixo::before{background:var(--faint)}
+  @media(max-width:1000px){.ops{grid-template-columns:1fr 1fr}}
+  @media(max-width:680px){.ops{grid-template-columns:1fr}}
+
+  /* ---- closing ---- */
+  .principle{font-family:var(--sans);font-size:clamp(26px,3.6vw,46px);font-weight:500;line-height:1.2;letter-spacing:-0.025em;max-width:1000px}
+  .principle .em{color:var(--emerald);font-style:normal;font-weight:500}
+  .cta-row{display:flex;flex-wrap:wrap;gap:22px;margin-top:48px;align-items:center}
+  .btn{display:inline-flex;align-items:center;gap:10px;background:var(--emerald);color:#04130c;font-weight:500;font-size:15px;padding:15px 30px;border-radius:999px;text-decoration:none;letter-spacing:-0.01em;transition:transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 16px 44px rgba(52,211,153,.22)}
+  .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+  .src{margin-top:58px;border-top:1px solid var(--line-soft);padding-top:22px;color:var(--faint);font-size:12px;line-height:1.8;max-width:880px;letter-spacing:0}
+  .src b{color:var(--muted);font-weight:500}
+
+  /* ---- abertura crxate (linguagem do site) ---- */
+  .values{display:grid;grid-template-columns:repeat(3,1fr);gap:28px 48px;margin-top:54px;max-width:1000px}
+  .value{padding-top:22px;border-top:1px solid var(--line)}
+  .value i{display:block;width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 12px rgba(255,255,255,.6);margin:4px 0 18px}
+  .value b{display:block;font-size:18px;font-weight:500;letter-spacing:-0.01em;margin-bottom:11px;color:var(--text)}
+  .value span{color:var(--muted);font-size:13.5px;line-height:1.62;font-weight:300}
+
+  /* ---- passos (propósito) ---- */
+  .steps{display:block;margin-top:14px}
+  .step{padding:18px 0;display:flex;gap:22px;align-items:baseline;border-top:1px solid var(--line-soft)}
+  .step:first-child{border-top:0}
+  .step .si{font-family:var(--serif);font-size:21px;font-weight:300;color:var(--emerald);min-width:30px}
+  .step b{font-weight:500;font-size:16px;letter-spacing:-0.01em}
+  .step b small{display:block;color:var(--muted);font-weight:400;font-size:14px;margin-top:5px;letter-spacing:0;line-height:1.5}
+
+  /* ---- fechamento em colunas ---- */
+  .cols{display:grid;grid-template-columns:repeat(2,1fr);gap:30px 64px;margin-top:38px;max-width:840px}
+  .col{padding-top:24px;border-top:1px solid var(--line)}
+  .col .h{display:flex;align-items:baseline;gap:12px;margin-bottom:18px}
+  .col .h b{font-family:var(--sans);font-size:20px;font-weight:500;letter-spacing:-0.02em}
+  .col .h i{font-style:normal;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--emerald)}
+  .col ul{list-style:none}
+  .col li{color:var(--muted);font-size:14px;line-height:1.5;padding:11px 0 11px 18px;position:relative;border-top:1px solid var(--line-soft)}
+  .col li:first-child{border-top:0}
+  .col li::before{content:"";position:absolute;left:0;top:18px;width:5px;height:5px;border-radius:50%;background:var(--emerald);opacity:.65}
+  @media(max-width:900px){.cols{grid-template-columns:1fr}}
+
+  @media(max-width:900px){
+    .facts{grid-template-columns:1fr 1fr}
+    .values{grid-template-columns:1fr}
+    .topbar{padding:20px 24px}
+  }
+  @media(max-width:560px){.facts{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <svg class="logo" viewBox="0 0 477.3414 110.5" role="img" aria-label="Crxate" fill="currentColor">
+    <g fill-rule="evenodd">
+      <path d="M 263.578125 45.828125 C 296.414062 39.976562 301.363281 87.574219 273.207031 92.5625 C 240.007812 98.445312 234.144531 51.078125 263.578125 45.828125 Z M 390.164062 60.472656 C 394.9375 39.773438 428.574219 39.492188 433.621094 60.484375 Z M 229.148438 51.195312 L 227.195312 56.683594 C 226.210938 68.132812 225.414062 70.136719 226.988281 82.667969 C 230.851562 97.996094 244.046875 109.429688 259.824219 111.089844 C 279.695312 113.183594 285.265625 105.164062 293.398438 95.597656 L 293.554688 109.238281 L 311.167969 108.835938 L 311.480469 91.027344 C 312.9375 92.933594 311.851562 91.359375 313.085938 93.695312 L 316.167969 99.554688 C 317.75 101.824219 319.9375 103.976562 322.207031 105.53125 C 339.886719 117.625 370.371094 110.015625 373.011719 92.996094 C 373.566406 92.09375 375.285156 89.015625 375.34375 92.609375 C 382.738281 103.734375 395.710938 112.722656 416.296875 111.140625 C 432.625 109.882812 447.8125 99.421875 451.355469 86.046875 C 445.277344 85.972656 434.898438 84.359375 430.042969 86.996094 C 427.71875 88.253906 427.65625 89.683594 423.476562 91.441406 C 408.640625 97.683594 392.980469 90.851562 389.460938 76.074219 L 454.800781 75.859375 C 456.308594 47.25 440.488281 27.472656 412.292969 27.105469 C 383.125 26.722656 368.144531 46.519531 369.117188 75.964844 L 356.652344 76.441406 C 356.394531 85.585938 354.433594 91.453125 346.167969 92.777344 C 334.023438 94.722656 332.972656 88.453125 329.375 80.242188 L 329.878906 46.34375 L 370.484375 46.195312 L 370.59375 29.746094 C 361.28125 29.359375 336.800781 30.898438 329.472656 29.03125 L 329.410156 0.996094 L 310.25 1.542969 L 310.230469 58.015625 C 303.429688 40.421875 294.4375 29.039062 272.761719 27.203125 C 254.535156 25.660156 233.296875 35.425781 229.148438 51.195312" />
+      <path d="M 80.101562 59.175781 L 96.507812 59.378906 L 96.453125 79.289062 L 82.835938 79.273438 C 76.953125 79.890625 79.917969 84.265625 71.65625 89.535156 C 59.777344 97.113281 35.960938 93.097656 35.054688 70.296875 C 33.914062 41.582031 71.261719 37.425781 80.101562 59.175781 Z M 147.445312 60.328125 L 147.1875 62.546875 L 166.234375 62.570312 C 162.726562 35.71875 147.25 20.074219 118.609375 28.730469 C 101.796875 33.816406 102.125 40.277344 97.253906 49.542969 C 94.289062 44.589844 92.976562 42.371094 89.042969 38.609375 C 78.25 28.289062 62.527344 24.871094 47.273438 28.265625 C 6.109375 37.421875 4.304688 98.527344 45.785156 109.75 C 59.761719 113.53125 78.054688 110.71875 87.839844 100.730469 L 96.328125 91.203125 L 96.515625 109.1875 L 115.890625 108.851562 C 115.992188 95.007812 114.445312 70.789062 116.132812 58.292969 C 118.617188 39.871094 146.773438 41.125 147.445312 60.328125 Z M 180.28125 67.542969 L 152.429688 109.164062 L 175.160156 109.078125 L 194.957031 79.902344 L 215.894531 109.191406 L 239.195312 108.941406 L 209.984375 68.277344 L 237.734375 29.097656 L 214.738281 29.359375 L 195.953125 56.648438 L 177.144531 29.117188 L 153.320312 29.121094 Z M 180.28125 67.542969" />
+    </g>
+  </svg>
+  <div class="right">Estudo de Mercado</div>
+</div>
+
+<nav class="dots" id="dots"></nav>
+
+<main class="deck" id="deck">
+
+  <!-- 0 · CRXATE -->
+  <section class="slide" data-label="Crxate">
+    <div class="glow" style="width:560px;height:560px;background:radial-gradient(circle,rgba(52,211,153,.16),transparent 70%);top:-140px;right:-120px"></div>
+    <div class="ring" style="width:720px;height:720px;bottom:-380px;right:-220px"></div>
+    <div class="inner">
+      <div class="eyebrow r">Quem somos</div>
+      <h2 class="r d1" style="max-width:920px">Construímos <em>hubs de IA</em><br>para processos críticos.</h2>
+      <p class="lead r d2" style="margin-top:28px">
+        Pegamos operações manuais, caras e espalhadas, como financeiro, backoffice e atendimento, e transformamos em sistemas com contexto, automação e auditoria. A tecnologia faz o trabalho pesado, mas a decisão continua na mão de quem entende do negócio.
+      </p>
+      <div class="values r d3">
+        <div class="value"><i></i><b>Pessoas decidem</b><span>A palavra final é sempre de um humano responsável.</span></div>
+        <div class="value"><i></i><b>Máquinas executam</b><span>O repetitivo e o operacional rodam no automático.</span></div>
+        <div class="value"><i></i><b>IA analisa</b><span>Ela lê, cruza e prepara. Nunca decide sozinha.</span></div>
+      </div>
+    </div>
+    <div class="scroll-hint"><span class="bar"></span>role para começar</div>
+  </section>
+
+  <!-- 1 · A FATTOR -->
+  <section class="slide" data-label="Fattor Crédito">
+    <div class="inner">
+      <div class="kicker r">01 · A empresa</div>
+      <h2 class="r d1" style="margin-top:18px">Fattor <em>Crédito.</em></h2>
+      <p class="lead r d2" style="margin-top:26px;font-size:22px;max-width:760px">
+        Securitizadora S.A. fechada, há quase uma década transformando recebíveis em títulos do mercado de capitais, com sede em Jaguariúna.
+      </p>
+    </div>
+  </section>
+
+  <!-- 2 · PROPÓSITO DA REUNIÃO -->
+  <section class="slide" data-label="Por que estamos aqui">
+    <div class="glow" style="width:480px;height:480px;background:radial-gradient(circle,rgba(52,211,153,.12),transparent 70%);top:-140px;left:-140px"></div>
+    <div class="inner two">
+      <div>
+        <div class="kicker r">02 · Por que estamos aqui</div>
+        <h2 class="r d1" style="margin-top:18px">O motivo<br>desta <em>conversa</em>.</h2>
+      </div>
+      <div>
+        <p class="lead r d2">
+          A gente não veio com um produto pronto pra empurrar. Veio entender, junto com vocês, onde a operação trava hoje e em quais desses pontos a Crxate pode entrar pra atender melhor a Fattor.
+        </p>
+        <div class="steps r d3">
+          <div class="step"><span class="si">01</span><b>Ouvir os gargalos reais<small>O que pesa na operação de vocês no dia a dia, na prática.</small></b></div>
+          <div class="step"><span class="si">02</span><b>Cruzar com o que a IA resolve bem<small>Separar o que dá ganho de verdade do que é só barulho.</small></b></div>
+          <div class="step"><span class="si">03</span><b>Desenhar o primeiro passo juntos<small>Um piloto pequeno, com resultado rápido e a decisão na mão de vocês.</small></b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · O SEGMENTO -->
+  <section class="slide" data-label="O segmento">
+    <div class="glow" style="width:460px;height:460px;background:radial-gradient(circle,rgba(56,189,248,.12),transparent 70%);bottom:-160px;left:-120px"></div>
+    <div class="inner two">
+      <div>
+        <div class="kicker r">03 · O mercado</div>
+        <h2 class="r d1" style="margin-top:18px">Como a<br><em>securitização</em><br>opera.</h2>
+      </div>
+      <div>
+        <p class="lead r d2">
+          O segmento pega recebíveis que ainda vão entrar, como duplicatas e financiamentos, e transforma em títulos que circulam no mercado de capitais: <b style="color:var(--text)">CRI, CRA e FIDC</b>.
+        </p>
+        <p class="lead r d3" style="margin-top:20px;color:var(--muted);font-size:19px">
+          A securitizadora fica no meio do caminho: compra esses créditos de empresas que precisam antecipar o dinheiro (os cedentes) e revende para investidores. Tudo dentro das regras da CVM, funcionando como uma alternativa ao crédito do banco.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · FRAGILIDADES -->
+  <section class="slide" data-label="Fragilidades">
+    <div class="inner">
+      <div class="kicker r">04 · Onde o segmento trava</div>
+      <h2 class="r d1" style="margin-top:18px">As fragilidades do nicho.</h2>
+      <div class="frag-grid">
+        <div class="frag r d2"><div class="n">01</div><p>Originação, análise de crédito e <b style="color:#fff;font-weight:600">due diligence</b> ainda andam devagar, presas a etapas manuais e espalhadas em vários lugares.</p></div>
+        <div class="frag r d2"><div class="n">02</div><p>É difícil achar e qualificar bons cedentes, principalmente PMEs, e também investidores, porque casar perfil de risco e retorno dá trabalho.</p></div>
+        <div class="frag r d3"><div class="n">03</div><p>A régua regulatória sobe o tempo todo. Cada operação pede mais documentação e auditoria pra ficar em dia com a CVM <b style="color:#fff;font-weight:600">(175 e 60)</b>.</p></div>
+        <div class="frag r d3"><div class="n">04</div><p>Acompanhar o risco de inadimplência e a qualidade dos ativos o tempo todo é o que sustenta a confiança do investidor.</p></div>
+        <div class="frag r d4"><div class="n">05</div><p>Formalizar, registrar e cuidar das garantias ainda roda numa estrutura antiga, e isso segura o crescimento das operações.</p></div>
+        <div class="frag r d4"><div class="n">06</div><p>Sem um padrão na hora de coletar e apresentar a informação, fica mais difícil analisar, precificar e distribuir os títulos.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · OPORTUNIDADES -->
+  <section class="slide" data-label="Oportunidades">
+    <div class="glow" style="width:600px;height:600px;background:radial-gradient(circle,rgba(34,197,94,.10),transparent 70%);top:-200px;right:-200px"></div>
+    <div class="inner">
+      <div class="kicker r">05 · O que a Crxate pluga num Hub</div>
+      <h2 class="r d1" style="margin-top:14px">Oportunidades de automação.</h2>
+      <p class="muted r d2" style="margin-top:14px;max-width:720px;font-size:16px;line-height:1.6">Priorizadas por impacto e esforço. Sempre com o princípio Crxate no centro: a IA analisa, a pessoa decide.</p>
+
+      <div class="ops">
+        <div class="op flag r d3">
+          <span class="chan">Vendas</span>
+          <h4>Due diligence & análise de crédito</h4>
+          <p>IA pra coletar, validar e analisar os dados de crédito de cedentes e devedores: histórico, score de risco, conformidade. Encurta bastante o tempo de colocar cada operação de pé.</p>
+          <div class="badges"><span class="badge b-alto"><span class="k">Impacto</span> Alto</span><span class="badge b-medio"><span class="k">Esforço</span> Médio</span></div>
+        </div>
+        <div class="op flag r d3">
+          <span class="chan">Vendas</span>
+          <h4>Matching entre cedente e investidor</h4>
+          <p>Um hub que conecta na hora o cedente certo ao investidor certo, casando perfil de risco e retorno. Ajuda a precificar melhor e acelera o fechamento de cada negócio.</p>
+          <div class="badges"><span class="badge b-alto"><span class="k">Impacto</span> Alto</span><span class="badge b-alto"><span class="k">Esforço</span> Alto</span></div>
+        </div>
+        <div class="op flag r d3">
+          <span class="chan">Vendas + Marketing</span>
+          <h4>Monitoramento de risco & compliance</h4>
+          <p>Acompanha em tempo real a inadimplência, as mudanças de regra e os indicadores de ESG dos ativos. Avisa antes do problema crescer e já deixa o relatório de conformidade pronto.</p>
+          <div class="badges"><span class="badge b-alto"><span class="k">Impacto</span> Alto</span><span class="badge b-alto"><span class="k">Esforço</span> Alto</span></div>
+        </div>
+        <div class="op r d4">
+          <span class="chan">Vendas</span>
+          <h4>Gestão de documentos & contratos</h4>
+          <p>IA pra organizar, indexar e puxar os dados que importam num volume grande de contratos. É o ganho rápido: achar informação na hora e tirar peso da burocracia.</p>
+          <div class="badges"><span class="badge b-medio"><span class="k">Impacto</span> Médio</span><span class="badge b-baixo"><span class="k">Esforço</span> Baixo</span></div>
+        </div>
+        <div class="op r d4">
+          <span class="chan">Marketing</span>
+          <h4>Conteúdo & nutrição personalizada</h4>
+          <p>IA generativa pra criar material educativo sob medida pra cada tipo de cedente e investidor, com fluxos de e-mail e chatbot que aquecem o lead e melhoram a qualificação.</p>
+          <div class="badges"><span class="badge b-medio"><span class="k">Impacto</span> Médio</span><span class="badge b-medio"><span class="k">Esforço</span> Médio</span></div>
+        </div>
+        <div class="op r d4">
+          <span class="chan">Marketing</span>
+          <h4>Otimização de campanhas digitais</h4>
+          <p>IA pra ler o desempenho das campanhas, achar padrão no público e ajustar segmentação, mensagem e timing. Mais eficiência e melhor retorno sobre o que se investe.</p>
+          <div class="badges"><span class="badge b-baixo"><span class="k">Impacto</span> Baixo</span><span class="badge b-baixo"><span class="k">Esforço</span> Baixo</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · PRÓXIMOS PASSOS -->
+  <section class="slide" data-label="Próximos passos">
+    <div class="glow" style="width:560px;height:560px;background:radial-gradient(circle,rgba(52,211,153,.16),transparent 70%);bottom:-200px;left:-120px"></div>
+    <div class="ring" style="width:720px;height:720px;top:-380px;right:-180px"></div>
+    <div class="inner">
+      <div class="kicker r">06 · Próximos passos</div>
+      <h2 class="r d1" style="margin-top:16px">Perguntas e<br><em>próximos passos</em>.</h2>
+
+      <div class="cols">
+        <div class="col r d2">
+          <div class="h"><b>Perguntas</b><i>pra vocês</i></div>
+          <ul>
+            <li>Onde a operação mais perde tempo hoje?</li>
+            <li>Quantas operações vocês originam por mês?</li>
+            <li>O que já tentaram automatizar e não emplacou?</li>
+            <li>Quem decide o quê no fluxo de aprovação?</li>
+          </ul>
+        </div>
+        <div class="col r d3">
+          <div class="h"><b>Próximos passos</b><i>juntos</i></div>
+          <ul>
+            <li>Escolher juntos o gargalo que mais dói</li>
+            <li>Desenhar um piloto de 30 dias nele</li>
+            <li>Revisão semanal, decisão sempre de vocês</li>
+            <li>Se provar valor, vira rotina dentro de um Hub</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cta-row r d4">
+        <span class="muted" style="font-size:14px">Pessoas decidem · Máquinas executam · IA analisa</span>
+      </div>
+      <p class="src r d6">
+        <b>Sobre este estudo.</b> Montamos este diagnóstico no Scan Engine da Crxate, a partir de dados públicos da empresa (Receita Federal e BrasilAPI) e de uma pesquisa de mercado com apoio de IA e fontes verificáveis. Ele serve pra começar a conversa. Antes de tirar qualquer coisa do papel, os números e as prioridades precisam ser conferidos com quem vive a operação da Fattor no dia a dia.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  const deck = document.getElementById('deck');
+  const slides = [...document.querySelectorAll('.slide')];
+  const dotsNav = document.getElementById('dots');
+
+  // build dots
+  slides.forEach((s,i)=>{
+    const a = document.createElement('a');
+    a.href = '#';
+    a.title = s.dataset.label || ('Seção '+(i+1));
+    a.addEventListener('click',e=>{e.preventDefault();s.scrollIntoView({behavior:'smooth'});});
+    dotsNav.appendChild(a);
+  });
+  const dots = [...dotsNav.children];
+
+  // reveal + active dot via IntersectionObserver
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(en=>{
+      const i = slides.indexOf(en.target);
+      if(en.isIntersecting){
+        en.target.classList.add('in');
+        if(en.intersectionRatio > .5){
+          dots.forEach(d=>d.classList.remove('active'));
+          dots[i] && dots[i].classList.add('active');
+        }
+      }
+    });
+  },{root:deck,threshold:[.15,.5,.75]});
+  slides.forEach(s=>io.observe(s));
+  slides[0].classList.add('in');
+  dots[0].classList.add('active');
+
+  // navegacao por teclado: funciona como slides
+  function current(){
+    const top = deck.scrollTop;
+    let idx = 0, best = Infinity;
+    slides.forEach((s,i)=>{const d=Math.abs(s.offsetTop-top);if(d<best){best=d;idx=i;}});
+    return idx;
+  }
+  function go(n){const i=Math.max(0,Math.min(slides.length-1,n));slides[i].scrollIntoView({behavior:'smooth'});}
+  window.addEventListener('keydown',e=>{
+    if(['ArrowDown','PageDown',' '].includes(e.key)){e.preventDefault();go(current()+1);}
+    if(['ArrowUp','PageUp'].includes(e.key)){e.preventDefault();go(current()-1);}
+    if(e.key==='Home'){e.preventDefault();go(0);}
+    if(e.key==='End'){e.preventDefault();go(slides.length-1);}
+  });
+</script>
+</body>
+</html>
